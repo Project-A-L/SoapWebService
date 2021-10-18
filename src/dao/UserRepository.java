@@ -17,11 +17,16 @@ import exceptions.UpdateException;
 
 public class UserRepository {
     private static Connection sql;
+    private static UserRepository instance = new UserRepository();
 
-    public UserRepository() {
+    private UserRepository() {
         sql = MysqlConnect.getConnection();
     }
 
+    public static UserRepository getUserRepoInstance() {
+        return instance;
+    }
+       
     public void save(User user) throws SaveException{
         try {
             PreparedStatement query = sql.prepareStatement(

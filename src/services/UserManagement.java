@@ -17,7 +17,7 @@ public class UserManagement {
     private UserRepository userRepo;
 
     public UserManagement() {
-        this.userRepo = new UserRepository();
+        this.userRepo = UserRepository.getUserRepoInstance();
     }
 
     public String addUser(@WebParam(name = "User") User user) {
