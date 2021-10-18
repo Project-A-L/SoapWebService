@@ -6,9 +6,12 @@ import java.util.Date;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import security.Crypt;
+
 
 @XmlRootElement
 public class User {
+
     private int id;
     private String email;
     private String firstName;
@@ -81,7 +84,7 @@ public class User {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = Crypt.encrypt(password);
     }
 
     public void setPhoneNumber(String phoneNumber) {
@@ -98,7 +101,7 @@ public class User {
     public int getId() {
         return id;
     }
-    
+
     public String getEmail() {
         return email;
     }
