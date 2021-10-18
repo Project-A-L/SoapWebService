@@ -2,7 +2,9 @@ package dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import domain.User;
 
@@ -19,7 +21,7 @@ public class UserRepository {
             PreparedStatement query = sql.prepareStatement(
                     "INSERT INTO Users(mail,firstName,lastName,phoneNumber,userRole,userLogin,userPassword) VALUES(?,?,?,?,?,?,?)");
             query.setString(1, user.getEmail());
-            query.setString(2, user.getFisrtName());
+            query.setString(2, user.getFirstName());
             query.setString(3, user.getLastName());
             query.setString(4, user.getPhoneNumber());
             query.setString(5, user.getUserRole());
@@ -28,6 +30,23 @@ public class UserRepository {
             query.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public ArrayList<User> findAll() {
+        ArrayList<User> users = new ArrayList<User>();
+        try {
+            PreparedStatement query = sql.prepareStatement("SELECT * FROM Users");
+            ResultSet result = query.executeQuery();
+            while (result.next()) {
+                users.add(new User(result.getString("mail"), result.getString("firstName"),
+                        result.getString("lastName"), result.getString("phoneNumber"), result.getString("userRole"),
+                        result.getString("userLogin"), result.getBoolean("isBlocked")));
+            }
+            return users;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return users;
         }
     }
 }

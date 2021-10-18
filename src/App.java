@@ -1,6 +1,6 @@
 import javax.xml.ws.Endpoint;
 
-import service.UserManagement;
+import services.UserManagement;
 
 public class App {
     public static void main(String[] args) throws Exception {

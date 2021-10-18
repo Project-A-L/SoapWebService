@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class User {
     
     private String email;
-    private String fisrtName;
+    private String firstName;
     private String lastName;
     private String phoneNumber;
     private String userRole;
@@ -27,7 +27,7 @@ public class User {
             String password) {
         super();
         setEmail(email); 
-        setFisrtName(fisrtName);
+        setFirstName(firstName);
         setLastName(lastName);
         setPhoneNumber(phoneNumber);
         setUserRole(userRole);
@@ -37,13 +37,23 @@ public class User {
         setDateCreated(new Date());
         setDateModified(new Date());
     }
+    public User(String email, String firstName, String lastName, String phoneNumber, String userRole, String login,boolean blocked) {
+        super();
+        setFirstName(firstName);
+        setEmail(email); 
+        setLastName(lastName);
+        setPhoneNumber(phoneNumber);
+        setUserRole(userRole);
+        setLogin(login);
+        setBlocked(blocked);
+    }
     
     public void setEmail(String email) {
         this.email = email;
     }
     
-    public void setFisrtName(String fisrtName) {
-        this.fisrtName = fisrtName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public void setLastName(String lastName) {
@@ -83,8 +93,8 @@ public class User {
         return email;
     }
     
-    public String getFisrtName() {
-        return fisrtName;
+    public String getFirstName() {
+        return firstName;
     }
 
     public String getLastName() {
