@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class User {
-    
+    private int id;
     private String email;
     private String firstName;
     private String lastName;
@@ -37,15 +37,22 @@ public class User {
         setDateCreated(new Date());
         setDateModified(new Date());
     }
-    public User(String email, String firstName, String lastName, String phoneNumber, String userRole, String login,boolean blocked) {
+
+    public User(int id, String email, String firstName, String lastName, String phoneNumber, String userRole,
+            String login, boolean blocked) {
         super();
+        setId(id);
         setFirstName(firstName);
-        setEmail(email); 
+        setEmail(email);
         setLastName(lastName);
         setPhoneNumber(phoneNumber);
         setUserRole(userRole);
         setLogin(login);
         setBlocked(blocked);
+    }
+    
+    public void setId(int id) {
+        this.id = id;
     }
     
     public void setEmail(String email) {
@@ -88,6 +95,9 @@ public class User {
         this.dateModified = dateModified;
     }
 
+    public int getId() {
+        return id;
+    }
     
     public String getEmail() {
         return email;
