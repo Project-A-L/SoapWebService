@@ -18,7 +18,6 @@ public class User {
     private String lastName;
     private String phoneNumber;
     private String userRole;
-    private String login;
     private String password;
     private boolean blocked;
     private Date dateCreated;
@@ -26,15 +25,13 @@ public class User {
 
     public User() {}
     
-    public User(String email, String firstName, String lastName, String phoneNumber, String userRole, String login,
-            String password) {
+    public User(String email, String firstName, String lastName, String phoneNumber, String userRole, String password) {
         super();
         setEmail(email); 
         setFirstName(firstName);
         setLastName(lastName);
         setPhoneNumber(phoneNumber);
         setUserRole(userRole);
-        setLogin(login);
         setPassword(password);
         setBlocked(false);
         setDateCreated(new Date());
@@ -42,7 +39,7 @@ public class User {
     }
 
     public User(int id, String email, String firstName, String lastName, String phoneNumber, String userRole,
-            String login, boolean blocked) {
+            boolean blocked) {
         super();
         setId(id);
         setFirstName(firstName);
@@ -50,8 +47,13 @@ public class User {
         setLastName(lastName);
         setPhoneNumber(phoneNumber);
         setUserRole(userRole);
-        setLogin(login);
         setBlocked(blocked);
+    }
+    
+    public User(String email, String password) {
+        super();
+        setEmail(email);
+        this.password = password;
     }
     
     public void setId(int id) {
@@ -77,10 +79,6 @@ public class User {
 
     public void setBlocked(boolean blocked) {
         this.blocked = blocked;
-    }
-    
-    public void setLogin(String login) {
-        this.login = login;
     }
 
     public void setPassword(String password) {
@@ -118,10 +116,6 @@ public class User {
         return userRole;
     }
     
-    public String getLogin() {
-        return login;
-    }
-
     public String getPassword() {
         return password;
     }

@@ -30,14 +30,13 @@ public class UserRepository {
     public void save(User user) throws SaveException{
         try {
             PreparedStatement query = sql.prepareStatement(
-                    "INSERT INTO Users(mail,firstName,lastName,phoneNumber,userRole,userLogin,userPassword) VALUES(?,?,?,?,?,?,?)");
+                    "INSERT INTO Users(mail,firstName,lastName,phoneNumber,userRole,userPassword) VALUES(?,?,?,?,?,?)");
             query.setString(1, user.getEmail());
             query.setString(2, user.getFirstName());
             query.setString(3, user.getLastName());
             query.setString(4, user.getPhoneNumber());
             query.setString(5, user.getUserRole());
-            query.setString(6, user.getLogin());
-            query.setString(7, user.getPassword());
+            query.setString(6, user.getPassword());
             query.executeUpdate();
         } catch (SQLException e) {
             throw new SaveException("An error occured while adding a new user ! : " + e.getMessage());
@@ -51,8 +50,7 @@ public class UserRepository {
             ResultSet result = query.executeQuery();
             while (result.next()) {
                 users.add(new User(result.getInt("id"), result.getString("mail"), result.getString("firstName"),
-                        result.getString("lastName"), result.getString("phoneNumber"), result.getString("userRole"),
-                        result.getString("userLogin"), result.getBoolean("isBlocked")));
+                        result.getString("lastName"), result.getString("phoneNumber"), result.getString("userRole"),result.getBoolean("isBlocked")));
             }
             return users;
         } catch (SQLException e) {
@@ -67,8 +65,7 @@ public class UserRepository {
             ResultSet result = query.executeQuery();
             if (result.next()) {
                 User user = new User(result.getInt("id"), result.getString("mail"), result.getString("firstName"),
-                        result.getString("lastName"), result.getString("phoneNumber"), result.getString("userRole"),
-                        result.getString("userLogin"), result.getBoolean("isBlocked"));
+                        result.getString("lastName"), result.getString("phoneNumber"), result.getString("userRole"),result.getBoolean("isBlocked"));
                 return user;
             } else {
                 throw new FetchException("User with id " + id + " Not Found !");
@@ -83,16 +80,34 @@ public class UserRepository {
             PreparedStatement query = sql.prepareStatement("SELECT * FROM Users WHERE mail = ?");
             query.setString(1, mail);
             ResultSet result = query.executeQuery();
-            if (result.next()) {   
+            if (result.next()) {
                 User user = new User(result.getInt("id"), result.getString("mail"), result.getString("firstName"),
-                result.getString("lastName"), result.getString("phoneNumber"), result.getString("userRole"),
-                        result.getString("userLogin"), result.getBoolean("isBlocked"));
+                        result.getString("lastName"), result.getString("phoneNumber"), result.getString("userRole"),
+                        result.getBoolean("isBlocked"));
                 return user;
             } else {
-                throw new FetchException("User with mail " + mail + " Not Found !"); 
+                throw new FetchException("User with mail " + mail + " Not Found !");
             }
         } catch (SQLException e) {
-            throw new FetchException("An error occured while fetching user with email " + mail + " ! : " + e.getMessage());
+            throw new FetchException(
+                    "An error occured while fetching user with email " + mail + " ! : " + e.getMessage());
+        }
+    }
+    
+    public User findOne(String mail) throws FetchException {
+        try {
+            PreparedStatement query = sql.prepareStatement("SELECT userPassword FROM Users WHERE mail = ?");
+            query.setString(1, mail);
+            ResultSet result = query.executeQuery();
+            if (result.next()) {
+                User user = new User(mail,result.getString("userPassword"));
+                return user;
+            } else {
+                throw new FetchException("User with mail " + mail + " Not Found !");
+            }
+        } catch (SQLException e) {
+            throw new FetchException(
+                    "An error occured while fetching user with email " + mail + " ! : " + e.getMessage());
         }
     }
     
@@ -104,8 +119,7 @@ public class UserRepository {
             ResultSet result = query.executeQuery();
             while (result.next()) {
                 users.add(new User(result.getInt("id"), result.getString("mail"), result.getString("firstName"),
-                        result.getString("lastName"), result.getString("phoneNumber"), result.getString("userRole"),
-                        result.getString("userLogin"), result.getBoolean("isBlocked")));
+                        result.getString("lastName"), result.getString("phoneNumber"), result.getString("userRole"),result.getBoolean("isBlocked")));
             }
             return users;
         } catch (SQLException e) {
@@ -116,15 +130,14 @@ public class UserRepository {
     public void update(User user) throws UpdateException{
         try {
             PreparedStatement query = sql.prepareStatement(
-                    "UPDATE users SET mail=?,firstName=?,lastName=?,phoneNumber=?,userRole=?,userLogin=?,userPassword=?,dateModified=NOW() WHERE id=?");
+                    "UPDATE users SET mail=?,firstName=?,lastName=?,phoneNumber=?,userRole=?,userPassword=?,dateModified=NOW() WHERE id=?");
             query.setString(1, user.getEmail());
             query.setString(2, user.getFirstName());
             query.setString(3, user.getLastName());
             query.setString(4, user.getPhoneNumber());
             query.setString(5, user.getUserRole());
-            query.setString(6, user.getLogin());
-            query.setString(7, user.getPassword());
-            query.setInt(8, user.getId());
+            query.setString(6, user.getPassword());
+            query.setInt(7, user.getId());
             query.executeUpdate();
         } catch (SQLException e) {
             throw new UpdateException("An error Occured while updating user ! : " + e.getMessage());
@@ -141,7 +154,7 @@ public class UserRepository {
         }
     }
     
-    public void deleteByMail(String mail) throws DeleteException{
+    public void deleteByMail(String mail) throws DeleteException {
         try {
             PreparedStatement query = sql.prepareStatement("DELETE FROM users where mail=?");
             query.setString(1, mail);
@@ -150,4 +163,5 @@ public class UserRepository {
             throw new DeleteException("An error occured while deleting user ! : " + e.getMessage());
         }
     }
+
 }
