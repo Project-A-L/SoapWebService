@@ -13,6 +13,7 @@ import exceptions.DeleteException;
 import exceptions.FetchException;
 import exceptions.SaveException;
 import exceptions.UpdateException;
+import exceptions.UserAlreadyExistException;
 
 
 public class UserRepository {
@@ -26,21 +27,29 @@ public class UserRepository {
     public static UserRepository getUserRepoInstance() {
         return instance;
     }
-       
-    public void save(User user) throws SaveException{
+    
+    public void save(User user) throws SaveException, UserAlreadyExistException {
         try {
-            PreparedStatement query = sql.prepareStatement(
-                    "INSERT INTO Users(mail,firstName,lastName,phoneNumber,userRole,userPassword) VALUES(?,?,?,?,?,?)");
-            query.setString(1, user.getEmail());
-            query.setString(2, user.getFirstName());
-            query.setString(3, user.getLastName());
-            query.setString(4, user.getPhoneNumber());
-            query.setString(5, user.getUserRole());
-            query.setString(6, user.getPassword());
-            query.executeUpdate();
-        } catch (SQLException e) {
-            throw new SaveException("An error occured while adding a new user ! : " + e.getMessage());
-        }
+            User userExist = findOne(user.getEmail());
+            if (userExist == null) {
+                try {
+                    PreparedStatement query = sql.prepareStatement(
+                        "INSERT INTO Users(mail,firstName,lastName,phoneNumber,userRole,userPassword) VALUES(?,?,?,?,?,?)");
+                        query.setString(1, user.getEmail());
+                        query.setString(2, user.getFirstName());
+                        query.setString(3, user.getLastName());
+                        query.setString(4, user.getPhoneNumber());
+                        query.setString(5, user.getUserRole());
+                        query.setString(6, user.getPassword());
+                        query.executeUpdate();
+                } catch (SQLException e) {
+                    throw new SaveException("An error occured while adding a new user ! : " + e.getMessage());
+                }
+            } else {
+                throw new UserAlreadyExistException("User with email " + user.getEmail() + " already exist !");
+            }
+        } catch (FetchException e) {}
+        
     }
 
     public ArrayList<User> findAll() throws FetchException {
@@ -95,16 +104,15 @@ public class UserRepository {
     }
     
     public User findOne(String mail) throws FetchException {
+        User user = null;
         try {
             PreparedStatement query = sql.prepareStatement("SELECT userPassword FROM Users WHERE mail = ?");
             query.setString(1, mail);
             ResultSet result = query.executeQuery();
             if (result.next()) {
-                User user = new User(mail,result.getString("userPassword"));
-                return user;
-            } else {
-                throw new FetchException("User with mail " + mail + " Not Found !");
+                user = new User(mail,result.getString("userPassword"));
             }
+            return user;
         } catch (SQLException e) {
             throw new FetchException(
                     "An error occured while fetching user with email " + mail + " ! : " + e.getMessage());

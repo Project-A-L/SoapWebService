@@ -10,6 +10,7 @@ import exceptions.DeleteException;
 import exceptions.FetchException;
 import exceptions.SaveException;
 import exceptions.UpdateException;
+import exceptions.UserAlreadyExistException;
 
 
 @WebService
@@ -25,6 +26,8 @@ public class UserManagement {
             userRepo.save(user);
             return "User Added Successfully !";
         } catch (SaveException e) {
+            return e.getMessage();
+        } catch(UserAlreadyExistException e) {
             return e.getMessage();
         }
     }
