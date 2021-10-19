@@ -10,7 +10,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 public class Crypt {
-    private static final String secret = "mySecretString";
+    private static final String secret = "eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTYzNDY4NzMyNywiaWF0IjoxNjM0Njg3MzI3fQ.3_zfSom1oA2LEviyS-zKNg4TB4zm-9B2Un1syxux11E";
     private static SecretKeySpec secretKey;
     private static byte[] key;
  
