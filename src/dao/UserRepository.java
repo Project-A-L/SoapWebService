@@ -200,9 +200,10 @@ public class UserRepository {
         try {
             PreparedStatement query = sql
                     .prepareStatement("SELECT * FROM Users WHERE firstName LIKE ? OR lastName LIKE ? OR mail LIKE ?");
-            query.setString(1, string);
-            query.setString(2, string);
-            query.setString(3, string);
+            String queryLike = string + "%";
+            query.setString(1, queryLike);
+            query.setString(2, queryLike);
+            query.setString(3, queryLike);
             ResultSet result = query.executeQuery();
             while (result.next()) {
                 users.add(new User(result.getInt("id"), result.getString("mail"), result.getString("firstName"),
