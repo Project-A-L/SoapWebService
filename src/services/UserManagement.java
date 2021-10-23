@@ -55,6 +55,15 @@ public class UserManagement {
         }
     }
 
+    public ArrayList<User> filterUsers(@WebParam(name = "Query") String query) {
+        try {
+            return userRepo.filter(query);
+        } catch (FetchException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
     public User getUserById(@WebParam(name = "Id") int id) {
         try {
             return userRepo.findById(id);
@@ -100,13 +109,15 @@ public class UserManagement {
         }
     }
 
-    public String blockUser(@WebParam(name = "Id") int id,@WebParam(name = "Block") boolean block) {
+    public String blockUser(@WebParam(name = "Id") int id, @WebParam(name = "Block") boolean block) {
         try {
-            userRepo.blockUser(id,block);
+            userRepo.blockUser(id, block);
             return "User Blocked Successfully !";
         } catch (UpdateException e) {
             return e.getMessage();
         }
     }
+    
+
 
 }

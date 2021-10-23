@@ -195,4 +195,23 @@ public class UserRepository {
         }
     }
 
+    public ArrayList<User> filter(String string) throws FetchException {
+        ArrayList<User> users = new ArrayList<User>();
+        try {
+            PreparedStatement query = sql
+                    .prepareStatement("SELECT * FROM Users WHERE firstName LIKE ? OR lastName LIKE ? OR mail LIKE ?");
+            query.setString(1, string);
+            query.setString(2, string);
+            query.setString(3, string);
+            ResultSet result = query.executeQuery();
+            while (result.next()) {
+                users.add(new User(result.getInt("id"), result.getString("mail"), result.getString("firstName"),
+                        result.getString("lastName"), result.getString("phoneNumber"), result.getString("userRole"),result.getBoolean("isBlocked")));
+            }
+            return users;
+        } catch (SQLException e) {
+            throw new FetchException("An error occured while filtering users ! " + e.getMessage());
+        }
+    }
+
 }
