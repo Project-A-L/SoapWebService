@@ -24,7 +24,7 @@ public class UserAuthentication {
     public boolean login(@WebParam(name = "Mail")String mail,@WebParam(name = "Password") String password) {
         try {
             User user = userRepo.findOne(mail);
-            if (user.getPassword().equalsIgnoreCase(Crypt.encrypt(password))) {
+            if (user.getPassword().equalsIgnoreCase(Crypt.encrypt(password)) && user.getUserRole().equalsIgnoreCase("admin")) {
                 return true;
             }
             else

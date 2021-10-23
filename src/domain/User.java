@@ -50,9 +50,10 @@ public class User {
         setBlocked(blocked);
     }
     
-    public User(String email, String password) {
+    public User(String email, String password,String userRole) {
         super();
         setEmail(email);
+        setUserRole(userRole);
         this.password = password;
     }
     

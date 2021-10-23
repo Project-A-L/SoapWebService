@@ -116,11 +116,11 @@ public class UserRepository {
     public User findOne(String mail) throws FetchException {
         User user = null;
         try {
-            PreparedStatement query = sql.prepareStatement("SELECT userPassword FROM Users WHERE mail = ?");
+            PreparedStatement query = sql.prepareStatement("SELECT userPassword,userRole FROM Users WHERE mail = ?");
             query.setString(1, mail);
             ResultSet result = query.executeQuery();
             if (result.next()) {
-                user = new User(mail,result.getString("userPassword"));
+                user = new User(mail,result.getString("userPassword"),result.getString("userRole"));
             }
             return user;
         } catch (SQLException e) {
