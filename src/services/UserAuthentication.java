@@ -5,15 +5,20 @@ import javax.jws.WebService;
 
 import dao.UserRepository;
 import domain.User;
+import exceptions.DbConnectionException;
 import exceptions.FetchException;
 import security.Crypt;
 
 @WebService
 public class UserAuthentication {
-    private UserRepository userRepo;
+    private UserRepository userRepo = null;
 
     public UserAuthentication() {
-        this.userRepo = UserRepository.getUserRepoInstance();
+        try {
+            this.userRepo = UserRepository.getUserRepoInstance();
+        } catch (DbConnectionException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public boolean login(@WebParam(name = "Mail")String mail,@WebParam(name = "Password") String password) {

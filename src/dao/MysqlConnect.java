@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import exceptions.DbConnectionException;
+
 public class MysqlConnect {
     private static final String LOGIN_STRING = "admin";
     private static final String PASSWORD_STRING = "passer";
@@ -16,17 +18,20 @@ public class MysqlConnect {
             Class.forName(MYSQL_DRIVER_STRING);
             connection = DriverManager.getConnection(MYSQL_DB_STRING, LOGIN_STRING, PASSWORD_STRING);
         } catch (ClassNotFoundException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Connection to MySql Failed : " + e.getMessage());
         } catch (SQLException se) {
-            System.out.println(se.getMessage());
+            System.out.println("Connection to MySql Failed : " + se.getMessage());
         }
     }
 
-    public static Connection getConnection() {
+    public static Connection getConnection() throws DbConnectionException{
         if (connection != null) {
             return connection;
         } else {
             new MysqlConnect();
+            if (connection == null)
+                throw new DbConnectionException("Connection to Database Failed !");
+            else
             return connection;
         }
     }

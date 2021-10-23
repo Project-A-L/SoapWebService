@@ -6,6 +6,7 @@ import javax.jws.WebService;
 import javax.jws.WebParam;
 import dao.UserRepository;
 import domain.User;
+import exceptions.DbConnectionException;
 import exceptions.DeleteException;
 import exceptions.FetchException;
 import exceptions.SaveException;
@@ -18,7 +19,11 @@ public class UserManagement {
     private UserRepository userRepo;
 
     public UserManagement() {
-        this.userRepo = UserRepository.getUserRepoInstance();
+        try {
+            this.userRepo = UserRepository.getUserRepoInstance();            
+        } catch (DbConnectionException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public String addUser(@WebParam(name = "User") User user) {
@@ -94,4 +99,14 @@ public class UserManagement {
             return e.getMessage();
         }
     }
+
+    public String blockUser(@WebParam(name = "Id") int id,@WebParam(name = "Block") boolean block) {
+        try {
+            userRepo.blockUser(id,block);
+            return "User Blocked Successfully !";
+        } catch (UpdateException e) {
+            return e.getMessage();
+        }
+    }
+
 }

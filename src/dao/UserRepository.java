@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 
 import domain.User;
+import exceptions.DbConnectionException;
 import exceptions.DeleteException;
 import exceptions.FetchException;
 import exceptions.SaveException;
@@ -17,15 +18,24 @@ import exceptions.UserAlreadyExistException;
 
 
 public class UserRepository {
-    private static Connection sql;
+    private static Connection sql = null;
     private static UserRepository instance = new UserRepository();
 
     private UserRepository() {
-        sql = MysqlConnect.getConnection();
+        try {
+            sql = MysqlConnect.getConnection();
+        } catch (DbConnectionException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
-    public static UserRepository getUserRepoInstance() {
-        return instance;
+    public static UserRepository getUserRepoInstance() throws DbConnectionException {
+        if (sql != null) {
+            return instance;
+        }
+        else {
+            throw new DbConnectionException("No Sql Connection Found !");
+        }
     }
     
     public void save(User user) throws SaveException, UserAlreadyExistException {
@@ -150,6 +160,19 @@ public class UserRepository {
         } catch (SQLException e) {
             throw new UpdateException("An error Occured while updating user ! : " + e.getMessage());
         }
+    }
+    
+    public void blockUser(int id,boolean block) throws UpdateException {
+        try {
+            PreparedStatement query = sql.prepareStatement(
+                    "UPDATE users SET isBlocked = ?,dateModified=NOW() WHERE id=?");
+            query.setInt(1, block ? 1 : 0);
+            query.setInt(2, id);
+            query.executeUpdate();
+        } catch (SQLException e) {
+            throw new UpdateException("An error Occured while updating user ! : " + e.getMessage());
+        }
+        
     }
     
     public void deleteById(int id) throws DeleteException{
