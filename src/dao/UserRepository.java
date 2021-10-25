@@ -56,7 +56,7 @@ public class UserRepository {
                     throw new SaveException("An error occured while adding a new user ! : " + e.getMessage());
                 }
             } else {
-                throw new UserAlreadyExistException("User with email " + user.getEmail() + " already exist !");
+                throw new UserAlreadyExistException("User already exist !");
             }
         } catch (FetchException e) {}
         
