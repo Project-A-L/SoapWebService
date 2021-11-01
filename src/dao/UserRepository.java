@@ -44,12 +44,12 @@ public class UserRepository {
             if (userExist == null) {
                 try {
                     PreparedStatement query = sql.prepareStatement(
-                        "INSERT INTO Users(mail,firstName,lastName,phoneNumber,userRole,userPassword) VALUES(?,?,?,?,?,?)");
+                        "INSERT INTO Users(mail,firstName,lastName,phoneNumber,role_id,userPassword) VALUES(?,?,?,?,?,?)");
                         query.setString(1, user.getEmail());
                         query.setString(2, user.getFirstName());
                         query.setString(3, user.getLastName());
                         query.setString(4, user.getPhoneNumber());
-                        query.setString(5, user.getUserRole());
+                        query.setInt(5, user.getUserRole().equals("admin") ? 1 : 2);
                         query.setString(6, user.getPassword());
                         query.executeUpdate();
                 } catch (SQLException e) {
@@ -69,7 +69,7 @@ public class UserRepository {
             ResultSet result = query.executeQuery();
             while (result.next()) {
                 users.add(new User(result.getInt("id"), result.getString("mail"), result.getString("firstName"),
-                        result.getString("lastName"), result.getString("phoneNumber"), result.getString("userRole"),result.getBoolean("isBlocked")));
+                        result.getString("lastName"), result.getString("phoneNumber"), (result.getInt("role_id") == 1) ? "admin" : "editor",result.getBoolean("isBlocked")));
             }
             return users;
         } catch (SQLException e) {
@@ -84,7 +84,7 @@ public class UserRepository {
             ResultSet result = query.executeQuery();
             if (result.next()) {
                 User user = new User(result.getInt("id"), result.getString("mail"), result.getString("firstName"),
-                        result.getString("lastName"), result.getString("phoneNumber"), result.getString("userRole"),result.getBoolean("isBlocked"));
+                        result.getString("lastName"), result.getString("phoneNumber"), (result.getInt("role_id") == 1) ? "admin" : "editor",result.getBoolean("isBlocked"));
                 return user;
             } else {
                 throw new FetchException("User with id " + id + " Not Found !");
@@ -101,7 +101,7 @@ public class UserRepository {
             ResultSet result = query.executeQuery();
             if (result.next()) {
                 User user = new User(result.getInt("id"), result.getString("mail"), result.getString("firstName"),
-                        result.getString("lastName"), result.getString("phoneNumber"), result.getString("userRole"),
+                        result.getString("lastName"), result.getString("phoneNumber"), (result.getInt("role_id") == 1) ? "admin" : "editor",
                         result.getBoolean("isBlocked"));
                 return user;
             } else {
@@ -116,11 +116,11 @@ public class UserRepository {
     public User findOne(String mail) throws FetchException {
         User user = null;
         try {
-            PreparedStatement query = sql.prepareStatement("SELECT userPassword,userRole FROM Users WHERE mail = ?");
+            PreparedStatement query = sql.prepareStatement("SELECT userPassword,role_id FROM Users WHERE mail = ?");
             query.setString(1, mail);
             ResultSet result = query.executeQuery();
             if (result.next()) {
-                user = new User(mail,result.getString("userPassword"),result.getString("userRole"));
+                user = new User(mail,result.getString("userPassword"),(result.getInt("role_id") == 1) ? "admin" : "editor");
             }
             return user;
         } catch (SQLException e) {
@@ -137,7 +137,7 @@ public class UserRepository {
             ResultSet result = query.executeQuery();
             while (result.next()) {
                 users.add(new User(result.getInt("id"), result.getString("mail"), result.getString("firstName"),
-                        result.getString("lastName"), result.getString("phoneNumber"), result.getString("userRole"),result.getBoolean("isBlocked")));
+                        result.getString("lastName"), result.getString("phoneNumber"), (result.getInt("role_id") == 1) ? "admin" : "editor",result.getBoolean("isBlocked")));
             }
             return users;
         } catch (SQLException e) {
@@ -148,12 +148,12 @@ public class UserRepository {
     public void update(User user) throws UpdateException{
         try {
             PreparedStatement query = sql.prepareStatement(
-                    "UPDATE users SET mail=?,firstName=?,lastName=?,phoneNumber=?,userRole=?,userPassword=?,dateModified=NOW() WHERE id=?");
+                    "UPDATE users SET mail=?,firstName=?,lastName=?,phoneNumber=?,role_id=?,userPassword=?,dateModified=NOW() WHERE id=?");
             query.setString(1, user.getEmail());
             query.setString(2, user.getFirstName());
             query.setString(3, user.getLastName());
             query.setString(4, user.getPhoneNumber());
-            query.setString(5, user.getUserRole());
+            query.setInt(5, user.getUserRole().equals("admin") ? 1 : 2);
             query.setString(6, user.getPassword());
             query.setInt(7, user.getId());
             query.executeUpdate();
@@ -207,7 +207,7 @@ public class UserRepository {
             ResultSet result = query.executeQuery();
             while (result.next()) {
                 users.add(new User(result.getInt("id"), result.getString("mail"), result.getString("firstName"),
-                        result.getString("lastName"), result.getString("phoneNumber"), result.getString("userRole"),result.getBoolean("isBlocked")));
+                        result.getString("lastName"), result.getString("phoneNumber"), (result.getInt("role_id") == 1) ? "admin" : "editor",result.getBoolean("isBlocked")));
             }
             return users;
         } catch (SQLException e) {
